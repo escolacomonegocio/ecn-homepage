@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { ecossistema as c, type Solucao } from "@/lib/content";
 import { Button, Kicker, Rich } from "../ui";
+import { DiamondVisual } from "../DiamondVisual";
 import leonardo from "@/assets/leonardo-chucrute.webp";
 import plateia from "@/assets/evento-plateia.jpg";
 import mauricioPalco from "@/assets/evento-mauricio.jpg";
@@ -15,42 +16,6 @@ const parceiros = [
 ];
 
 const idx = (i: number) => ({ "--i": i }) as CSSProperties;
-
-// 12 meses em anel, 7 tutores no centro: os dois números concretos do programa.
-function DiamanteVisual() {
-  const R = 168;
-  const seg = (i: number) => {
-    const a0 = ((i * 30 + 2.2 - 90) * Math.PI) / 180;
-    const a1 = (((i + 1) * 30 - 2.2 - 90) * Math.PI) / 180;
-    const p = (a: number) => `${(200 + R * Math.cos(a)).toFixed(2)} ${(200 + R * Math.sin(a)).toFixed(2)}`;
-    return `M${p(a0)}A${R} ${R} 0 0 1 ${p(a1)}`;
-  };
-  const tutors = Array.from({ length: 7 }, (_, i) => {
-    const a = ((i * 360) / 7 - 90) * (Math.PI / 180);
-    return { x: 200 + 104 * Math.cos(a), y: 200 + 104 * Math.sin(a) };
-  });
-  return (
-    <div className="eco-visual eco-diamante" aria-hidden="true">
-      <svg viewBox="0 0 400 400">
-        {Array.from({ length: 12 }, (_, i) => (
-          <path key={i} d={seg(i)} className="ring-seg" style={idx(i)} />
-        ))}
-        {tutors.map((t, i) => (
-          <g key={i} style={idx(i)} className="tutor">
-            <line x1="200" y1="200" x2={t.x} y2={t.y} />
-            <circle cx={t.x} cy={t.y} r="9" />
-          </g>
-        ))}
-        <circle cx="200" cy="200" r="46" className="ring-core" />
-      </svg>
-      <div className="ring-label">
-        <strong>12</strong>
-        <span>meses</span>
-      </div>
-      <p className="ring-caption">7 tutores especializados</p>
-    </div>
-  );
-}
 
 const estrutura = [
   "Instagram",
@@ -95,7 +60,7 @@ function Cutout({ src, alt }: { src: typeof leonardo; alt: string }) {
 }
 
 const visuals: Record<Solucao["id"], ReactNode> = {
-  diamante: <DiamanteVisual />,
+  diamante: <DiamondVisual />,
   mentoria: <Cutout src={leonardo} alt="Leonardo Chucrute, fundador da ECN" />,
   implementacao: <ImplementacaoVisual />,
   cursos: <Photo src={plateia} alt="Participantes de um encontro da ECN" pos="50% 40%" />,
@@ -130,7 +95,7 @@ export function Ecossistema() {
 
         <div className="eco-panels">
           {c.items.map((s) => (
-            <article key={s.id} id={s.id} className="eco-panel" data-eco-panel>
+            <article key={s.id} id={s.id} className={`eco-panel eco-panel--${s.id}`} data-eco-panel>
               <div className="eco-text">
                 <p className="eco-name">{s.name}</p>
                 <h3 className="eco-title">{s.title}</h3>
@@ -146,7 +111,7 @@ export function Ecossistema() {
                     <strong>Para quem é:</strong> {s.forWhom}
                   </p>
                 )}
-                <Button href="#contato" interesse={s.id} className="eco-cta">
+                <Button href="#contato" interesse={s.id} className={`eco-cta ${s.id === "diamante" ? "btn-shine" : ""}`}>
                   {s.cta}
                 </Button>
               </div>

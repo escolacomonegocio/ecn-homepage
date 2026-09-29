@@ -988,67 +988,6 @@ html.lenis body {
   display: none;
 }
 
-/* Consultoria Diamante: anel de 12 meses e 7 tutores */
-.eco-diamante {
-  display: grid;
-  place-items: center;
-  padding: 28px;
-  background: rgb(var(--snow) / 0.03);
-  box-shadow: inset 0 0 0 1px rgb(var(--snow) / 0.08);
-}
-.eco-diamante svg {
-  width: min(100%, 380px);
-  overflow: visible;
-}
-.ring-seg {
-  fill: none;
-  stroke: rgb(var(--mint));
-  stroke-width: 16;
-  stroke-linecap: round;
-  transition: stroke 0.4s var(--ease-out);
-  transition-delay: calc(var(--i) * 70ms + 150ms);
-}
-.tutor line {
-  stroke: rgb(var(--snow) / 0.18);
-  stroke-width: 1.5;
-}
-.tutor circle {
-  fill: rgb(var(--snow));
-}
-.tutor {
-  transform-box: fill-box;
-  transition: opacity 0.5s var(--ease-out);
-  transition-delay: calc(var(--i) * 80ms + 700ms);
-}
-.ring-core {
-  fill: rgb(var(--ink-2));
-  stroke: rgb(var(--mint) / 0.5);
-  stroke-width: 1.5;
-}
-.ring-label {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  pointer-events: none;
-}
-.ring-label strong {
-  font-size: 2.1rem;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-.ring-label span {
-  font-size: 0.72rem;
-  color: rgb(var(--fog));
-}
-.ring-caption {
-  margin-top: 18px;
-  font-weight: 500;
-  color: rgb(var(--snow) / 0.8);
-}
-
 /* Implementação: estrutura montada item a item */
 .eco-estrutura {
   display: grid;
@@ -1221,14 +1160,6 @@ html.lenis body {
     max-height: 600px;
     min-height: 0;
     aspect-ratio: auto;
-  }
-  .is-pinned .eco-panel:not(.is-active) .ring-seg {
-    stroke: rgb(var(--snow) / 0.1);
-    transition-delay: 0s;
-  }
-  .is-pinned .eco-panel:not(.is-active) .tutor {
-    opacity: 0;
-    transition-delay: 0s;
   }
   .is-pinned .eco-panel:not(.is-active) .eco-estrutura li {
     color: rgb(var(--snow) / 0.3);
@@ -2731,5 +2662,140 @@ html.lenis body {
     order: 3;
     align-self: flex-start;
     margin: 20px var(--gutter) 0;
+  }
+}
+
+/* ============================================================
+   Consultoria Diamante: tratamento premium
+   ============================================================ */
+/* Trama de facetas (losangos finos) + feixe de luz que atravessa o bloco. */
+.eco-slab::before,
+.eco-slab::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-out);
+}
+.eco-slab::before {
+  background:
+    radial-gradient(60% 70% at 72% 50%, rgb(var(--mint) / 0.12), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='208' viewBox='0 0 120 208'%3E%3Cg fill='none' stroke='%23f7faf8' stroke-opacity='.07' stroke-width='1'%3E%3Cpath d='M60 0 120 52 60 104 0 52Z'/%3E%3Cpath d='M60 104 120 156 60 208 0 156Z'/%3E%3Cpath d='M0 52 60 104M120 52 60 104M60 0v208M0 52h120M0 156h120'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: radial-gradient(75% 85% at 65% 50%, #000 20%, transparent 80%);
+  mask-image: radial-gradient(75% 85% at 65% 50%, #000 20%, transparent 80%);
+}
+.eco-slab::after {
+  inset: -20% -40%;
+  background: linear-gradient(105deg, transparent 42%, rgb(var(--snow) / 0.06) 49%, rgb(var(--mint) / 0.08) 51%, transparent 58%);
+  transform: translateX(-60%);
+}
+.eco-slab[data-active="diamante"]::before {
+  opacity: 1;
+}
+.eco-slab[data-active="diamante"]::after {
+  opacity: 1;
+  animation: diamond-sweep 7s var(--ease-in-out) infinite;
+}
+@keyframes diamond-sweep {
+  0% {
+    transform: translateX(-60%);
+  }
+  60%,
+  100% {
+    transform: translateX(60%);
+  }
+}
+.eco-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Visual: diamante 3D + números do programa */
+.eco-diamante {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+  background:
+    radial-gradient(90% 70% at 50% 40%, rgb(var(--ink-3) / 0.9), rgb(var(--ink-0)) 75%);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--snow) / 0.14),
+    inset 0 0 0 1px rgb(var(--snow) / 0.07),
+    0 40px 80px -40px rgb(var(--mint) / 0.35);
+}
+.diamond-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: block;
+}
+.diamond-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid rgb(var(--snow) / 0.08);
+}
+.diamond-stats > div {
+  display: grid;
+  gap: 2px;
+  padding: clamp(14px, 2vh, 20px) clamp(16px, 2vw, 24px);
+}
+.diamond-stats > div + div {
+  border-left: 1px solid rgb(var(--snow) / 0.08);
+}
+.diamond-stats strong {
+  font-size: clamp(1.8rem, 1.2rem + 1.6vw, 2.6rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: rgb(var(--snow));
+}
+.diamond-stats span {
+  font-size: 0.85rem;
+  color: rgb(var(--fog));
+}
+
+/* Nome com um losango no lugar do ponto */
+.eco-panel--diamante .eco-name::before {
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, rgb(var(--snow)), rgb(var(--mint)));
+  box-shadow: 0 0 12px rgb(var(--mint) / 0.8);
+}
+/* No layout empilhado (celular), o painel carrega a própria trama */
+.eco-panel--diamante {
+  position: relative;
+}
+
+/* Brilho que atravessa o botão */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: btn-shine 4.5s var(--ease-in-out) 1.5s infinite;
+  pointer-events: none;
+}
+@keyframes btn-shine {
+  0% {
+    transform: translateX(-120%);
+  }
+  40%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-shine::after,
+  .eco-slab[data-active="diamante"]::after {
+    animation: none;
+    opacity: 0;
   }
 }

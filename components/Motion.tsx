@@ -216,6 +216,7 @@ export function Motion() {
               if (i === current) return;
               current = i;
               panels.forEach((p, k) => p.classList.toggle("is-active", k === i));
+              eco.dataset.active = panels[i].id;
               tabs.forEach((t, k) => t.setAttribute("aria-current", String(k === i)));
             };
             setActive(0);
@@ -241,6 +242,7 @@ export function Motion() {
             };
             undo.push(() => {
               eco.classList.remove("is-pinned");
+              delete eco.dataset.active;
               panels.forEach((p) => p.classList.remove("is-active"));
               ecoJump = null;
             });
