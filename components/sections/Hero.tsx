@@ -35,13 +35,13 @@ export function Hero() {
     <section id="topo" data-theme="dark" data-hero className="hero">
       <HeroVisual labels={hero.labels} />
       <div className="page hero-inner" data-hero-content>
-        <Kicker className="hero-in hero-kicker">{hero.eyebrow}</Kicker>
-        <Title text={hero.title} />
-        <div className="hero-row">
-          <p className="t-lead hero-lead hero-in" style={{ animationDelay: "900ms" }}>
+        <div className="hero-copy">
+          <Kicker className="hero-in hero-kicker">{hero.eyebrow}</Kicker>
+          <Title text={hero.title} />
+          <p className="t-lead hero-lead hero-in" style={{ animationDelay: "780ms" }}>
             {hero.lead}
           </p>
-          <div className="hero-ctas hero-in" style={{ animationDelay: "1020ms" }}>
+          <div className="hero-ctas hero-in" style={{ animationDelay: "900ms" }}>
             <Button href="#solucoes" magnetic>
               {hero.ctaPrimary}
             </Button>
@@ -49,22 +49,17 @@ export function Hero() {
               {hero.ctaSecondary}
             </Button>
           </div>
-        </div>
-      </div>
-      <div className="page hero-foot hero-in" style={{ animationDelay: "1250ms" }}>
-        <div className="hero-note">
-          <div className="avatars" aria-hidden="true">
-            {[leonardo, mauricio, paulo].map((src, i) => (
-              <span key={i} className="avatar">
-                <Image src={src} alt="" width={96} height={120} sizes="96px" />
-              </span>
-            ))}
+          <div className="hero-note hero-in" style={{ animationDelay: "1050ms" }}>
+            <div className="avatars" aria-hidden="true">
+              {[leonardo, mauricio, paulo].map((src, i) => (
+                <span key={i} className="avatar">
+                  <Image src={src} alt="" width={96} height={120} sizes="96px" />
+                </span>
+              ))}
+            </div>
+            <p>{hero.note}</p>
           </div>
-          <p>{hero.note}</p>
         </div>
-        <a href="#experiencia" className="scroll-cue" aria-label="Rolar para a próxima seção">
-          <span className="scroll-cue-line" aria-hidden="true" />
-        </a>
       </div>
     </section>
   );

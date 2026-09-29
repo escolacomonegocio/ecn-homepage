@@ -65,10 +65,19 @@ function buildTargets(size: number, step: number) {
 // Onde o "e" fica dentro do hero: grande e à direita no desktop; no celular, no alto,
 // maior que a tela e cortado, atrás do texto.
 function placement(W: number, H: number) {
+  const ratio = BOX.h / BOX.w;
   if (W >= 1024) {
-    const size = Math.min(W * 0.56, H * 0.86 * (BOX.w / BOX.h));
-    return { size, ox: W - size - Math.max(24, W * 0.035), oy: (H - size * (BOX.h / BOX.w)) / 2 + H * 0.02 };
+    // coluna direita do split (texto ocupa a esquerda): o "e" fica contido e centralizado nela
+    // mesma grade do .page (máx. 1360px, margem = clamp(16px, 4vw, 56px))
+    const gutter = Math.min(Math.max(16, W * 0.04), 56);
+    const pageW = Math.min(W, 1360) - gutter * 2;
+    const pageX = (W - Math.min(W, 1360)) / 2 + gutter;
+    const colX = pageX + pageW * 0.54;
+    const colW = pageW * 0.46;
+    const size = Math.min(colW * 0.84, (H * 0.6) / ratio);
+    return { size, ox: colX + colW - size - colW * 0.06, oy: (H - size * ratio) / 2 + H * 0.03 };
   }
+  // celular: no alto, maior que a tela e cortado, atrás do texto (esmaecido por máscara)
   const size = Math.min(W * 1.05, 620);
   return { size, ox: W - size * 0.82, oy: H * 0.04 };
 }
