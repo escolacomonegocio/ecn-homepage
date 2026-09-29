@@ -5,6 +5,14 @@ import { Button, Kicker, Rich } from "../ui";
 import leonardo from "@/assets/leonardo-chucrute.webp";
 import plateia from "@/assets/evento-plateia.jpg";
 import mauricioPalco from "@/assets/evento-mauricio.jpg";
+import sx from "@/assets/parceiro-sx.png";
+import techlithy from "@/assets/parceiro-techlithy.png";
+
+// Empresas parceiras (logos enviados pelo cliente, convertidos para versão monocromática).
+const parceiros = [
+  { name: "SX Contabilidade e BPO Financeiro", logo: sx, cat: "Contabilidade e BPO financeiro" },
+  { name: "Techlithy", logo: techlithy, cat: "CRM" },
+];
 
 const idx = (i: number) => ({ "--i": i }) as CSSProperties;
 
@@ -99,7 +107,7 @@ export function Ecossistema() {
     <section id="solucoes" data-theme="light" className="section ecossistema">
       <header className="page eco-head">
         <Kicker>{c.kicker}</Kicker>
-        <h2 className="t-h2" data-reveal>
+        <h2 className="t-h2" data-split>
           {c.title}
         </h2>
         <p className="t-body-lg eco-lead" data-reveal>
@@ -107,7 +115,8 @@ export function Ecossistema() {
         </p>
       </header>
 
-      <div className="eco-slab" data-eco data-theme="dark">
+      <div className="slab eco-slab" data-eco data-slab data-theme="dark">
+        <div className="page eco-inner">
         <div className="eco-tabs" aria-label="Soluções">
           {c.items.map((s) => (
             <button key={s.id} type="button" className="eco-tab" data-eco-tab aria-controls={s.id}>
@@ -145,9 +154,21 @@ export function Ecossistema() {
             </article>
           ))}
         </div>
-        <span className="eco-vertical" aria-hidden="true">
-          Ecossistema
-        </span>
+        </div>
+      </div>
+
+      <div className="page partners">
+        <p className="partners-label" data-reveal>
+          Empresas que integram o ecossistema ECN
+        </p>
+        <ul className="partners-grid" data-stagger>
+          {parceiros.map((p) => (
+            <li key={p.name} className="partner">
+              <Image src={p.logo} alt={p.name} sizes="(min-width: 1024px) 280px, 60vw" className="partner-logo" />
+              <span className="partner-cat">{p.cat}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

@@ -22,7 +22,7 @@ export function Experiencia() {
       <div className="page exp-grid">
         <div className="exp-copy">
           <Kicker>{c.kicker}</Kicker>
-          <h2 className="t-h2" data-reveal>
+          <h2 className="t-h2" data-split>
             {c.title}
           </h2>
           <div className="exp-paras" data-stagger>

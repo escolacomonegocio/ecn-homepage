@@ -33,7 +33,7 @@ export function Manifesto() {
             {c.turnBody}
           </p>
         </div>
-        <h3 className="manifesto-closing" data-reveal>
+        <h3 className="manifesto-closing" data-split>
           {c.closing}
         </h3>
       </div>

@@ -56,7 +56,7 @@ export function Header() {
             </li>
           ))}
         </ul>
-        <a href="#contato" className="nav-cta">
+        <a href="#contato" className="nav-cta" data-open-form="">
           Fale com um especialista
         </a>
         <button
@@ -80,7 +80,7 @@ export function Header() {
             </li>
           ))}
         </ul>
-        <a href="#contato" className="btn btn-primary" onClick={() => setOpen(false)}>
+        <a href="#contato" className="btn btn-primary" data-open-form="" onClick={() => setOpen(false)}>
           <span className="btn-dot" aria-hidden="true" />
           <span>Fale com um especialista</span>
         </a>

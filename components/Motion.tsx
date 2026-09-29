@@ -15,14 +15,15 @@ export function Motion() {
     let cancelled = false;
 
     (async () => {
-      const [{ gsap }, { ScrollTrigger }, { default: Lenis }] = await Promise.all([
+      const [{ gsap }, { ScrollTrigger }, { SplitText }, { default: Lenis }] = await Promise.all([
         import("gsap"),
         import("gsap/ScrollTrigger"),
+        import("gsap/SplitText"),
         import("lenis"),
       ]);
       await document.fonts?.ready; // medidas (pins, encaixe dos painéis) com a fonte final
       if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger);
+      gsap.registerPlugin(ScrollTrigger, SplitText);
       ScrollTrigger.config({ ignoreMobileResize: true });
 
       const lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 0.95 });
@@ -34,6 +35,36 @@ export function Motion() {
 
       const q = <T extends Element = HTMLElement>(s: string, root: ParentNode = document) =>
         Array.from(root.querySelectorAll<T & Element>(s)) as T[];
+
+      // Modal aberto: a página para de rolar.
+      const lock = () => lenis.stop();
+      const unlock = () => lenis.start();
+      window.addEventListener("ecn:lock", lock);
+      window.addEventListener("ecn:unlock", unlock);
+
+      // Barra de progresso de leitura na pílula do menu.
+      const header = document.querySelector<HTMLElement>(".site-header");
+      const onScroll = ({ progress }: { progress: number }) => header?.style.setProperty("--progress", String(progress));
+      lenis.on("scroll", onScroll);
+
+      // Botões magnéticos (só com mouse): puxam levemente em direção ao cursor.
+      const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const magnets = fine ? q("[data-magnetic]") : [];
+      const magnetOff: Array<() => void> = [];
+      magnets.forEach((el) => {
+        const xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
+        const yTo = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
+        const move = (e: PointerEvent) => {
+          const r = el.getBoundingClientRect();
+          xTo((e.clientX - (r.left + r.width / 2)) * 0.22);
+          yTo((e.clientY - (r.top + r.height / 2)) * 0.3);
+        };
+        const leave = () => (xTo(0), yTo(0));
+        el.addEventListener("pointermove", move);
+        el.addEventListener("pointerleave", leave);
+        magnetOff.push(() => (el.removeEventListener("pointermove", move), el.removeEventListener("pointerleave", leave)));
+      });
+
 
       // Âncoras internas passam pelo Lenis. Âncoras de painéis do ecossistema são
       // resolvidas pelo próprio bloco pinado (ver ecoJump abaixo).
@@ -68,6 +99,20 @@ export function Motion() {
             ease: "none",
             scrollTrigger: { trigger: "[data-hero]", start: "top top", end: "bottom top", scrub: true },
           });
+
+          // Títulos: linhas sobem por trás de uma máscara (uma vez).
+          const splits = q("[data-split]").map((el) => {
+            const split = SplitText.create(el, { type: "lines", mask: "lines", linesClass: "split-line" });
+            gsap.from(split.lines, {
+              yPercent: 110,
+              duration: 1.15,
+              ease: "expo.out",
+              stagger: 0.09,
+              scrollTrigger: { trigger: el, start: "top 88%", once: true },
+            });
+            return split;
+          });
+          undo.push(() => splits.forEach((sp) => sp.revert()));
 
           // Entradas simples (uma vez).
           q("[data-reveal]").forEach((el) => {
@@ -176,7 +221,7 @@ export function Motion() {
             setActive(0);
             const st = ScrollTrigger.create({
               trigger: eco,
-              start: "top 16px",
+              start: "top top",
               end: `+=${(n - 1) * 85}%`,
               pin: true,
               snap: { snapTo: 1 / (n - 1), duration: { min: 0.25, max: 0.6 }, delay: 0.08, ease: "power2.inOut" },
@@ -306,6 +351,9 @@ export function Motion() {
 
       dispose = () => {
         document.removeEventListener("click", onClick);
+        window.removeEventListener("ecn:lock", lock);
+        window.removeEventListener("ecn:unlock", unlock);
+        magnetOff.forEach((f) => f());
         window.removeEventListener("load", refresh);
         mm.revert();
         gsap.ticker.remove(tick);

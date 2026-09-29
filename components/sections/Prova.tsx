@@ -23,7 +23,7 @@ export function Prova() {
   return (
     <section id="prova" data-theme="light" className="section prova">
       <div className="page prova-head">
-        <h2 className="t-h2" data-reveal>
+        <h2 className="t-h2" data-split>
           {c.title}
         </h2>
       </div>

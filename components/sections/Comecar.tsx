@@ -7,7 +7,7 @@ export function Comecar() {
       <div className="page comecar-grid">
         <div className="comecar-head">
           <Kicker>{c.kicker}</Kicker>
-          <h2 className="t-h2" data-reveal>
+          <h2 className="t-h2" data-split>
             {c.title}
           </h2>
           <p className="t-body-lg" data-reveal>

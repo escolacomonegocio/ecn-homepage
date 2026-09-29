@@ -1,50 +1,74 @@
-// Teste de ponta a ponta do formulário de contato (headless).
-// Uso: node scripts/test-form.mjs http://localhost:3210/
+// Teste de ponta a ponta do formulário em modal (headless).
+// Uso: node scripts/test-form.mjs http://localhost:3211/
 import puppeteer from "puppeteer-core";
 import assert from "node:assert/strict";
 
-const url = process.argv[2] ?? "http://localhost:3210/";
+const url = process.argv[2] ?? "http://localhost:3211/";
 const browser = await puppeteer.launch({ executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: "new" });
 const page = await browser.newPage();
-await page.setViewport({ width: 1280, height: 900 });
+await page.setViewport({ width: 1366, height: 800 });
 await page.evaluateOnNewDocument(() => {
   window.__opened = [];
   window.open = (u) => (window.__opened.push(u), null);
 });
 await page.goto(url, { waitUntil: "networkidle0" });
+await new Promise((r) => setTimeout(r, 800));
 
-// 1. Envio vazio: mostra erros e não abre nada.
-await page.$eval(".form-submit", (b) => b.click());
-const errors = await page.$$eval(".field-error", (els) => els.map((e) => e.textContent));
-assert.ok(errors.length >= 6, `esperava erros de validação, veio ${errors.length}`);
-assert.equal((await page.evaluate(() => window.__opened.length)), 0);
+const isOpen = () => page.$eval("dialog.mdialog", (d) => d.open);
+const click = (sel) => page.$eval(sel, (el) => el.click());
+const type = async (sel, text) => {
+  await page.$eval(sel, (i) => i.focus());
+  await page.keyboard.type(text);
+};
+const step = () => page.$eval(".mstep.is-current .mtitle", (h) => h.textContent);
 
-// 2. "Conhecer a Consultoria Diamante" pré-seleciona a opção no formulário.
-await page.evaluate(() => document.querySelector('[data-interesse="diamante"]').click());
-const checked = await page.$eval('input[name="interesse"]:checked', (i) => i.value);
-assert.equal(checked, "diamante");
+// 1. "Fale com um especialista" do hero abre o modal na 1ª etapa.
+await click(".hero .btn-glass");
+assert.equal(await isOpen(), true, "modal não abriu");
+assert.equal(await step(), "O que você procura?");
 
-// 3. Dados inválidos: e-mail e WhatsApp.
-await page.type("#f-nome", "Ana Ribeiro");
-await page.type("#f-cargo", "Diretora");
-await page.type("#f-escola", "Colégio Horizonte");
-await page.type("#f-cidade", "Niterói/RJ");
-await page.type("#f-whatsapp", "2199");
-await page.type("#f-email", "ana@");
-await page.$eval(".form-submit", (b) => b.click());
-const err2 = await page.$$eval(".field-error", (els) => els.map((e) => e.textContent));
-assert.equal(err2.length, 2, `esperava 2 erros (whatsapp, email): ${err2}`);
+// 2. Esc fecha.
+await page.keyboard.press("Escape");
+assert.equal(await isOpen(), false, "Esc não fechou");
 
-// 4. Corrige e envia: abre wa.me com a mensagem montada.
-await page.$eval("#f-whatsapp", (i) => (i.value = ""));
-await page.type("#f-whatsapp", "21987654321");
-await page.$eval("#f-email", (i) => (i.value = ""));
-await page.type("#f-email", "ana@colegiohorizonte.com.br");
-const masked = await page.$eval("#f-whatsapp", (i) => i.value);
-assert.equal(masked, "(21) 98765-4321");
-await page.$eval(".form-submit", (b) => b.click());
+// 3. "Conhecer a Consultoria Diamante" abre direto na 2ª etapa com a opção marcada.
+await click('[data-interesse="diamante"]');
+assert.equal(await isOpen(), true);
+assert.equal(await step(), "Sobre você");
+assert.match(await page.$eval(".mchosen span", (s) => s.textContent), /Consultoria Diamante/);
+
+// 4. Continuar vazio mostra erros e não avança.
+await click(".mstep.is-current .btn-primary");
+assert.equal(await step(), "Sobre você");
+assert.equal((await page.$$(".mstep.is-current .field-error")).length, 2);
+
+// 5. Preenche as etapas (Enter avança).
+await type("#m-nome", "Ana Ribeiro");
+await type("#m-cargo", "Diretora");
+await page.keyboard.press("Enter");
+await new Promise((r) => setTimeout(r, 120));
+assert.equal(await step(), "Sobre a sua escola");
+await type("#m-escola", "Colégio Horizonte");
+await type("#m-cidade", "Niterói/RJ");
+await click(".mstep.is-current .btn-primary");
+assert.equal(await step(), "Como falamos com você?");
+await type("#m-whatsapp", "21987654321");
+assert.equal(await page.$eval("#m-whatsapp", (i) => i.value), "(21) 98765-4321");
+await type("#m-email", "ana@");
+await click(".mstep.is-current .btn-primary");
+assert.equal((await page.$$(".mstep.is-current .field-error")).length, 1, "e-mail inválido deveria dar erro");
+await type("#m-email", "colegiohorizonte.com.br");
+
+// 6. Voltar mantém os dados.
+await click(".mstep.is-current .mlink");
+assert.equal(await step(), "Sobre a sua escola");
+assert.equal(await page.$eval("#m-escola", (i) => i.value), "Colégio Horizonte");
+await click(".mstep.is-current .btn-primary");
+
+// 7. Envia: abre o WhatsApp com a mensagem montada e mostra o estado de sucesso.
+await click(".mstep.is-current .btn-primary");
 const opened = await page.evaluate(() => window.__opened);
-assert.equal(opened.length, 1);
+assert.equal(opened.length, 1, "WhatsApp não abriu");
 const u = new URL(opened[0]);
 assert.equal(u.hostname, "wa.me");
 const text = u.searchParams.get("text");
@@ -52,7 +76,13 @@ for (const part of ["Ana Ribeiro", "Diretora", "Colégio Horizonte", "Niterói/R
   assert.ok(text.includes(part), `mensagem sem "${part}"`);
 }
 assert.ok(!text.includes("Número de alunos"), "campo opcional vazio não deve aparecer");
-assert.ok(await page.$(".form-done"), "estado de sucesso não apareceu");
+assert.ok(await page.$(".mdone"), "estado de sucesso não apareceu");
 
-console.log("form OK\n" + text);
+// 8. Opção escolhida no cartão da seção Contato abre na 2ª etapa.
+await click(".mclose");
+await click('.start-opt[data-interesse="cursos"]');
+assert.equal(await step(), "Sobre você");
+assert.match(await page.$eval(".mchosen span", (s) => s.textContent), /Cursos/);
+
+console.log("modal OK\n" + text);
 await browser.close();

@@ -13,7 +13,7 @@ export function Equipe() {
       <div className="page">
         <div className="equipe-head">
           <Kicker>{c.kicker}</Kicker>
-          <h2 className="t-h2" data-reveal>
+          <h2 className="t-h2" data-split>
             {c.title}
           </h2>
           <div className="equipe-intro" data-stagger>
@@ -48,10 +48,12 @@ export function Equipe() {
                 <span key={i} />
               ))}
             </span>
-            <h3 className="person-name">{c.team.name}</h3>
-            <p className="person-bio">
-              <Rich parts={c.team.text} />
-            </p>
+            <div className="team-body">
+              <h3 className="person-name">{c.team.name}</h3>
+              <p className="person-bio">
+                <Rich parts={c.team.text} />
+              </p>
+            </div>
             <Button href="#experiencia" variant="ghost">
               {c.cta}
             </Button>

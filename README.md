@@ -18,12 +18,15 @@ Nova home da ECN, construída a partir do documento de copy "Copy site ECN.docx"
 | Cores, tipografia, espaçamentos | `app/globals.css` (tokens no topo) |
 | Efeitos de rolagem | `components/Motion.tsx` (liga efeitos por atributos `data-*`) |
 | Visual de partículas do hero | `components/HeroVisual.tsx` |
-| Formulário de contato | `components/ContactForm.tsx` |
+| Formulário de contato (modal em etapas) | `components/ContactModal.tsx` |
+| Logos das empresas do ecossistema | `components/sections/Ecossistema.tsx` → `parceiros` |
 
 ## Como os efeitos funcionam
 
 As seções são Server Components com marcação completa e legível sem JavaScript. `Motion.tsx` carrega GSAP/Lenis depois da hidratação e procura atributos:
 
+- `data-split`: títulos sobem linha a linha por trás de uma máscara (GSAP SplitText)
+- `data-magnetic`: botão puxa levemente em direção ao cursor
 - `data-reveal`, `data-stagger`: entrada suave ao aparecer
 - `data-words`: leitura guiada (palavras acendem com a rolagem)
 - `data-count`: contadores numéricos
@@ -37,7 +40,7 @@ Com "reduzir movimento" ativado no sistema, nada disso roda e a página fica est
 
 ## Formulário
 
-O envio abre o WhatsApp do time (`lib/site.ts`) com a mensagem já preenchida. Não há gravação em banco. Para plugar um CRM, o ponto de entrada é a função `submit` em `components/ContactForm.tsx`.
+Modal (`<dialog>` nativo) em 4 etapas curtas, com vidro líquido. Abre por qualquer elemento com `data-open-form` ou `data-interesse="<id>"` (este já marca a opção e pula a 1ª etapa). O envio abre o WhatsApp do time (`lib/site.ts`) com a mensagem preenchida; não há gravação em banco. Para plugar um CRM, o ponto de entrada é a função `send` em `components/ContactModal.tsx`.
 
 ## Indexação
 
@@ -51,7 +54,9 @@ npm run build        # build de produção
 npm run typecheck    # checagem de tipos
 node scripts/prepare-assets.mjs "<pasta HOMEPAGE do cliente>"   # regenera fotos, fontes, ícones e imagem de compartilhamento
 node scripts/shoot.mjs <url> <pasta> [largura] [altura]         # capturas de tela ao longo da rolagem (REDUCED=1 simula movimento reduzido)
-node scripts/test-form.mjs <url>                                # teste ponta a ponta do formulário
+node scripts/test-form.mjs <url>                                # teste ponta a ponta do formulário em modal
+node scripts/shoot-intro.mjs <url> <pasta> [largura] [altura]   # quadros da animação de entrada do hero
+node scripts/shoot-modal.mjs <url> <pasta> [largura] [altura]   # capturas das etapas do modal
 node scripts/check-pins.mjs <url>                               # confere os blocos fixados em vários tamanhos de tela
 node scripts/lcp-probe.mjs <url>                                # LCP real com 4G lenta e CPU 4x
 node scripts/lh-summary.mjs <relatorio.json>                    # resumo de relatórios do Lighthouse

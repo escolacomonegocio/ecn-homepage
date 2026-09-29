@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Motion } from "@/components/Motion";
+import { ContactModal } from "@/components/ContactModal";
 import { Hero } from "@/components/sections/Hero";
 import { Experiencia } from "@/components/sections/Experiencia";
 import { Manifesto } from "@/components/sections/Manifesto";
@@ -29,6 +30,7 @@ export default function Home() {
         <Contato />
       </main>
       <Footer />
+      <ContactModal />
       <Motion />
     </>
   );

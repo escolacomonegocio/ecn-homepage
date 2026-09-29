@@ -1,15 +1,17 @@
 import { contato as c } from "@/lib/content";
 import { whatsappLink } from "@/lib/site";
 import { Kicker } from "../ui";
-import { ContactForm } from "../ContactForm";
 
+// A seção mostra a primeira pergunta do formulário; escolher uma opção abre o
+// formulário em modal já nessa opção (ver ContactModal).
 export function Contato() {
   return (
     <section id="contato" data-theme="dark" className="section contato">
+      <div className="contato-glow" aria-hidden="true" />
       <div className="page contato-grid">
         <div className="contato-copy">
           <Kicker>{c.kicker}</Kicker>
-          <h2 className="t-h2" data-reveal>
+          <h2 className="t-h2" data-split>
             {c.title}
           </h2>
           {c.paragraphs.map((p) => (
@@ -30,7 +32,20 @@ export function Contato() {
             </a>
           </div>
         </div>
-        <ContactForm />
+
+        <div className="start-card glass" data-reveal>
+          <p className="start-q">{c.interestLabel}</p>
+          <div className="start-grid">
+            {c.interests.map((i) => (
+              <a key={i.id} href="#contato" className="start-opt" data-interesse={i.id}>
+                <span className="opt-dot" aria-hidden="true" />
+                <span>{i.label}</span>
+                <span className="start-arrow" aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+          <p className="start-note">Leva menos de um minuto. Você escolhe, responde 3 perguntas curtas e fala com o nosso time pelo WhatsApp.</p>
+        </div>
       </div>
     </section>
   );

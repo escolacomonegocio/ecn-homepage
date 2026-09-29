@@ -21,22 +21,31 @@ export function Rich({ parts }: { parts: string | RichText }) {
 type BtnProps = {
   href: string;
   children: ReactNode;
-  variant?: "primary" | "ghost" | "ink";
+  variant?: "primary" | "ghost" | "ink" | "glass";
   className?: string;
+  /** Abre o formulário (modal) já com esta opção marcada. */
   interesse?: string;
+  /** Abre o formulário (modal) sem opção marcada. */
+  openForm?: boolean;
+  /** Botão "puxa" levemente em direção ao cursor (desktop). */
+  magnetic?: boolean;
   external?: boolean;
 };
 
-export function Button({ href, children, variant = "primary", className = "", interesse, external }: BtnProps) {
+// Sem JS o link leva à seção de contato; com JS, os marcados com data-open-form /
+// data-interesse abrem o formulário em modal.
+export function Button({ href, children, variant = "primary", className = "", interesse, openForm, magnetic, external }: BtnProps) {
   return (
     <a
       href={href}
       className={`btn btn-${variant} ${className}`}
       data-interesse={interesse}
+      data-open-form={openForm || interesse ? "" : undefined}
+      data-magnetic={magnetic ? "" : undefined}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
       <span className="btn-dot" aria-hidden="true" />
-      <span>{children}</span>
+      <span className="btn-label">{children}</span>
     </a>
   );
 }
