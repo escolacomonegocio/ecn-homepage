@@ -4,6 +4,7 @@ import sharp from "sharp";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { compress } from "wawoff2";
+import subsetFont from "subset-font";
 
 const SRC = process.argv[2];
 if (!SRC) throw new Error("Informe a pasta HOMEPAGE do cliente.");
@@ -53,12 +54,16 @@ for (const [src, out] of eventos) {
   console.log(out, info.width, info.height, Math.round(info.size / 1024) + "KB");
 }
 
-// Satoshi: OTF -> WOFF2 (só os pesos usados).
+// Satoshi: OTF -> WOFF2 recortado para latim (ASCII + Latin-1, que cobre todos os acentos
+// do português, + pontuação tipográfica). Menos bytes no caminho crítico do primeiro paint.
+const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => String.fromCodePoint(a + i)).join("");
+const glyphs = range(0x20, 0x7e) + range(0xa0, 0xff) + "–—‘’‚“”„•…‹›€™";
 for (const w of ["Regular", "Medium", "Bold", "Black"]) {
   const buf = readFileSync(join(id, "FONTES", `Satoshi-${w}.otf`));
-  const out = await compress(buf);
+  const full = await compress(buf);
+  const out = await subsetFont(buf, glyphs, { targetFormat: "woff2" });
   writeFileSync(`app/fonts/Satoshi-${w}.woff2`, out);
-  console.log(`Satoshi-${w}.woff2`, Math.round(out.length / 1024) + "KB");
+  console.log(`Satoshi-${w}.woff2`, Math.round(full.length / 1024) + "KB ->", Math.round(out.length / 1024) + "KB");
 }
 
 // Ícones: símbolo "e•" em fundo grafite, mesma geometria do Logo.tsx.
