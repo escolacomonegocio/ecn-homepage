@@ -191,7 +191,7 @@ export function Motion() {
               { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "none" },
               0,
             )
-              .fromTo("[data-manifesto-media] img", { scale: 1.3 }, { scale: 1.02, ease: "none" }, 0)
+              .fromTo("[data-manifesto-media] video", { scale: 1.3 }, { scale: 1.02, ease: "none" }, 0)
               .fromTo("[data-manifesto-title]", { scale: 0.84, y: 40 }, { scale: 1, y: 0, ease: "none" }, 0)
               .fromTo("[data-manifesto-shade]", { opacity: 0.35 }, { opacity: 0.7, ease: "none" }, 0.2);
           }

@@ -1,14 +1,13 @@
-import Image from "next/image";
 import { manifesto as c } from "@/lib/content";
 import { Kicker, Words } from "../ui";
-import palco from "@/assets/evento-palco.jpg";
+import { ManifestoVideo } from "../ManifestoVideo";
 
 export function Manifesto() {
   return (
     <section id="manifesto" data-theme="dark" className="slab manifesto" data-slab>
       <div className="manifesto-stage" data-manifesto-stage>
         <div className="manifesto-media" data-manifesto-media>
-          <Image src={palco} alt="Paulo Pereira em encontro da ECN com gestores escolares" fill sizes="100vw" placeholder="blur" className="object-cover" />
+          <ManifestoVideo />
           <div className="manifesto-shade" data-manifesto-shade />
         </div>
         <div className="manifesto-title-wrap">
