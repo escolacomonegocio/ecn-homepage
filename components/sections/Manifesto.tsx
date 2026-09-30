@@ -7,21 +7,23 @@ import { ManifestoVideo } from "../ManifestoVideo";
 import leonardo from "@/assets/leonardo-chucrute.webp";
 import mauricio from "@/assets/mauricio-thomas.webp";
 import paulo from "@/assets/paulo-pereira.webp";
+import transforma from "@/assets/grupo-transforma.png";
 
 const idx = (i: number) => ({ "--i": i }) as CSSProperties;
 
 // Visuais de cada capítulo: traduzem o que o parágrafo diz, sem texto novo.
 function Origem() {
+  // Leonardo (fundador) no centro
   const people = [
-    { src: leonardo, name: "Leonardo Chucrute" },
     { src: mauricio, name: "Mauricio Thomas" },
+    { src: leonardo, name: "Leonardo Chucrute" },
     { src: paulo, name: "Paulo Pereira" },
   ];
   return (
     <div className="chv chv-origem" aria-hidden="true">
       {people.map((p, i) => (
         <figure key={p.name} className="chv-person" style={idx(i)}>
-          <div className="chv-person-img cutout-bg">
+          <div className="chv-person-img">
             <Image src={p.src} alt="" fill sizes="(min-width: 1024px) 16vw, 30vw" className="cutout" />
           </div>
           <figcaption>{p.name}</figcaption>
@@ -35,11 +37,13 @@ function Fundacao() {
   return (
     <div className="chv chv-fundacao" aria-hidden="true">
       <svg className="chv-lines" viewBox="0 0 400 400" preserveAspectRatio="none">
-        <path d="M200 70 V200" pathLength={1} />
-        <path d="M200 200 C200 280 100 260 100 330" pathLength={1} />
-        <path d="M200 200 C200 280 300 260 300 330" pathLength={1} />
+        <path d="M200 76 V208" pathLength={1} />
+        <path d="M200 208 C200 290 100 262 100 336" pathLength={1} />
+        <path d="M200 208 C200 290 300 262 300 336" pathLength={1} />
       </svg>
-      <span className="chv-node chv-node-top">Grupo Transforma Educação</span>
+      <span className="chv-node-top chv-transforma">
+        <Image src={transforma} alt="Grupo Transforma Educação" sizes="120px" className="chv-transforma-img" />
+      </span>
       <span className="chv-hub">
         <Logo id="chv" className="chv-logo" />
       </span>

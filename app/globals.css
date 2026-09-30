@@ -3192,3 +3192,132 @@ html.lenis body {
     text-align: right;
   }
 }
+
+/* ---- Ajustes capítulos 1 e 2 ---- */
+/* Capítulo 1: foto de grupo sobre um único fundo, Leonardo no centro */
+.chv-origem {
+  background:
+    radial-gradient(60% 55% at 50% 58%, rgb(var(--mint) / 0.18), transparent 72%),
+    linear-gradient(180deg, rgb(var(--ink-3) / 0.6), rgb(var(--ink-0)));
+}
+.chv-origem::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  z-index: 3;
+  background: linear-gradient(0deg, rgb(var(--ink-0) / 0.92), transparent);
+  pointer-events: none;
+}
+.chv-person-img {
+  border-radius: 0;
+  overflow: visible;
+}
+.chv-person figcaption {
+  z-index: 4;
+}
+.chv-person:nth-child(1) {
+  z-index: 1;
+}
+.chv-person:nth-child(3) {
+  z-index: 1;
+}
+@media (min-width: 1024px) {
+  .is-horizontal .chv-origem {
+    padding-top: 8%;
+  }
+  .is-horizontal .chv-person {
+    width: 42%;
+    margin-inline: -9%;
+  }
+  .is-horizontal .chv-person:nth-child(2) {
+    width: 52%;
+  }
+}
+
+/* Capítulo 2: logo do Grupo Transforma no topo e linhas exatas */
+.chv-lines path {
+  vector-effect: none;
+  stroke-width: 0.9;
+}
+.chv-transforma {
+  position: absolute;
+  left: 50%;
+  top: 14%;
+  display: grid;
+  place-items: center;
+  width: clamp(76px, 7.5vw, 104px);
+  aspect-ratio: 1;
+  border-radius: 22px;
+  background: rgb(var(--ink-2));
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--snow) / 0.14),
+    0 16px 40px -20px rgb(var(--ink-0));
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.9s var(--ease-expo);
+  transition-delay: 0.1s;
+}
+.chv-transforma-img {
+  width: 64%;
+  height: auto;
+}
+.chv-node-l {
+  top: 84%;
+}
+.chv-node-r {
+  top: 84%;
+}
+.chv-hub {
+  top: 52%;
+}
+.chv-pulse {
+  top: 24%;
+}
+@keyframes pulse-down {
+  0% {
+    top: 24%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    top: 44%;
+    opacity: 0;
+  }
+}
+.has-motion .chapter:not(.is-in) .chv-transforma {
+  opacity: 0;
+  transform: translate(-50%, -30%) scale(0.92);
+}
+@media (min-width: 1024px) {
+  .is-horizontal .chv-origem {
+    padding-top: 0;
+  }
+  .is-horizontal .chv-person {
+    width: 56%;
+    margin-inline: -17%;
+  }
+  .is-horizontal .chv-person:nth-child(2) {
+    width: 64%;
+  }
+  .is-horizontal .chv-person figcaption {
+    bottom: 16px;
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 639px) {
+  .chv-node {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    white-space: normal;
+    text-align: center;
+    max-width: 44%;
+    line-height: 1.2;
+  }
+}
