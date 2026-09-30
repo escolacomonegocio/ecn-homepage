@@ -46,6 +46,46 @@ export const manifesto = {
     "É compartilhar experiências, métodos e ferramentas que nasceram da prática — e ajudar cada instituição a encontrar o caminho mais adequado para o seu próprio momento.",
   closing:
     "Não ensinamos apenas o que funciona na teoria. Compartilhamos o que aprendemos construindo escolas na prática.",
+  // Os mesmos parágrafos acima, divididos em capítulos para leitura em partes.
+  // Texto verbatim; { strong } só marca as frases-chave (branco sobre o cinza).
+  chapters: [
+    {
+      id: "origem",
+      label: "A origem",
+      text: [
+        "A ECN nasceu da experiência de ",
+        { strong: "quem construiu e participa da gestão de uma operação educacional real." },
+      ],
+    },
+    {
+      id: "fundacao",
+      label: "A fundação",
+      text: [
+        "Fundada por ",
+        { strong: "Leonardo Chucrute" },
+        ", fundador do Grupo Transforma Educação, em parceria com sócios que fizeram parte dessa trajetória, a ECN transforma essa experiência em ",
+        { strong: "conhecimento, métodos e soluções para gestores e instituições de ensino." },
+      ],
+    },
+    {
+      id: "desafios",
+      label: "Os desafios reais",
+      text: [
+        { strong: "O que ensinamos não nasceu apenas em uma sala de aula." },
+        " Foi construído a partir dos desafios reais de administrar escolas, liderar equipes, atrair alunos, organizar processos, tomar decisões e buscar sustentabilidade para o negócio.",
+      ],
+      // os seis desafios citados no próprio parágrafo
+      items: ["Administrar escolas", "Liderar equipes", "Atrair alunos", "Organizar processos", "Tomar decisões", "Buscar sustentabilidade"],
+    },
+    {
+      id: "virada",
+      label: "A virada",
+      text: [
+        { strong: "Por isso, nosso trabalho não é levar teoria para a sua escola." },
+        " É compartilhar experiências, métodos e ferramentas que nasceram da prática — e ajudar cada instituição a encontrar o caminho mais adequado para o seu próprio momento.",
+      ],
+    },
+  ] as Array<{ id: string; label: string; text: Array<string | { strong: string }>; items?: string[] }>,
 };
 
 export type SolucaoId = "diamante" | "mentoria" | "implementacao" | "cursos" | "palestras";

@@ -8,11 +8,14 @@ import plateia from "@/assets/evento-plateia.jpg";
 import mauricioPalco from "@/assets/evento-mauricio.jpg";
 import sx from "@/assets/parceiro-sx.png";
 import techlithy from "@/assets/parceiro-techlithy.png";
+import metrik from "@/assets/parceiro-metrik.png";
 
 // Empresas parceiras (logos enviados pelo cliente, convertidos para versão monocromática).
 const parceiros = [
   { name: "SX Contabilidade e BPO Financeiro", logo: sx, cat: "Contabilidade e BPO financeiro" },
   { name: "Techlithy", logo: techlithy, cat: "CRM" },
+  // arquivo enviado é só o ícone: o nome vai escrito embaixo
+  { name: "Métrik Edu", logo: metrik, cat: "Marketing para escolas", wordmark: true },
 ];
 
 const idx = (i: number) => ({ "--i": i }) as CSSProperties;
@@ -129,7 +132,8 @@ export function Ecossistema() {
         <ul className="partners-grid" data-stagger>
           {parceiros.map((p) => (
             <li key={p.name} className="partner">
-              <Image src={p.logo} alt={p.name} sizes="(min-width: 1024px) 280px, 60vw" className="partner-logo" />
+              <Image src={p.logo} alt={p.name} sizes="(min-width: 1024px) 280px, 60vw" className={`partner-logo ${"wordmark" in p ? "partner-icon" : ""}`} />
+              {"wordmark" in p && <span className="partner-name">{p.name}</span>}
               <span className="partner-cat">{p.cat}</span>
             </li>
           ))}

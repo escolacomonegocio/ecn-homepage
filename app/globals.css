@@ -813,41 +813,373 @@ html.lenis body {
   font-size: clamp(2.3rem, 0.8rem + 5vw, 6rem);
   text-shadow: 0 2px 40px rgb(var(--ink) / 0.35);
 }
-.manifesto-body {
-  display: grid;
-  gap: clamp(28px, 4vw, 44px);
-  padding-block: clamp(96px, 13vw, 200px);
+/* Capítulos do manifesto */
+.chapters-wrap {
+  position: relative;
+  padding-block: clamp(64px, 9vw, 120px) 0;
 }
-.manifesto-p {
-  max-width: 31ch;
-  font-size: clamp(1.45rem, 0.95rem + 1.9vw, 2.55rem);
-  line-height: 1.2;
+.chapters {
+  display: grid;
+  gap: clamp(20px, 3vw, 32px);
+  padding-inline: var(--gutter);
+  max-width: 1360px;
+  margin-inline: auto;
+}
+.chapter {
+  display: grid;
+  gap: clamp(20px, 3vw, 32px);
+  padding: clamp(20px, 3vw, 40px);
+  border-radius: 28px;
+  background: linear-gradient(160deg, rgb(var(--ink-2)), rgb(var(--ink-0)) 90%);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--snow) / 0.08),
+    inset 0 0 0 1px rgb(var(--snow) / 0.06);
+}
+.chapter-visual {
+  position: relative;
+  min-height: 280px;
+  border-radius: 20px;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 70% at 50% 45%, rgb(var(--mint) / 0.1), transparent 70%),
+    rgb(var(--ink-0) / 0.6);
+  box-shadow: inset 0 0 0 1px rgb(var(--snow) / 0.06);
+}
+.chapter-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: rgb(var(--mint));
+}
+.chapter-n {
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  padding: 4px 9px;
+  border-radius: 999px;
+  color: rgb(var(--ink));
+  background: rgb(var(--mint));
+}
+.chapter-text {
+  margin-top: 18px;
+  max-width: 34ch;
+  font-size: clamp(1.25rem, 0.95rem + 1vw, 1.9rem);
+  line-height: 1.28;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: rgb(var(--fog));
+}
+.chapter-text strong {
+  color: rgb(var(--snow));
+  font-weight: 700;
+}
+.chapters-progress {
+  display: none;
 }
 
-.manifesto-turn {
-  display: grid;
-  gap: 20px;
-  margin-top: clamp(24px, 4vw, 56px);
-  padding-top: clamp(32px, 4vw, 48px);
-  border-top: 1px solid rgb(var(--snow) / 0.12);
+/* Horizontal (desktop, com JS): seção fixada, cartões lado a lado */
+.chapters-wrap.is-horizontal {
+  height: 100svh;
+  padding: calc(var(--header-h) + 8px) 0 clamp(40px, 6vh, 64px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-.manifesto-turn-a {
-  font-size: clamp(1.35rem, 1rem + 1.2vw, 2rem);
+.is-horizontal .chapters {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  gap: clamp(20px, 2vw, 32px);
+  padding-left: max(var(--gutter), calc((100vw - 1360px) / 2 + var(--gutter)));
+  padding-right: max(var(--gutter), calc((100vw - 1360px) / 2 + var(--gutter)));
+  will-change: transform;
+}
+.is-horizontal .chapter {
+  width: min(80vw, 1120px);
+  height: 100%;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+}
+.is-horizontal .chapter-visual {
+  height: 100%;
+  min-height: 0;
+}
+.is-horizontal .chapters-progress {
+  display: block;
+  position: relative;
+  margin: clamp(18px, 3vh, 28px) max(var(--gutter), calc((100vw - 1360px) / 2 + var(--gutter))) 0;
+  height: 2px;
+  border-radius: 2px;
+  background: rgb(var(--snow) / 0.1);
+  overflow: hidden;
+}
+.chapters-progress span {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--mint));
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* Visual 1: fundadores */
+.chv {
+  position: absolute;
+  inset: 0;
+}
+.chv-origem {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 32px 12px 0;
+}
+.chv-person {
+  position: relative;
+  width: 36%;
+  margin-inline: -3%;
+  transition:
+    transform 1s var(--ease-expo),
+    opacity 1s var(--ease-expo);
+  transition-delay: calc(var(--i) * 110ms);
+}
+.chv-person:nth-child(2) {
+  z-index: 2;
+  width: 40%;
+}
+.chv-person-img {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+}
+.chv-person figcaption {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 10px;
+  text-align: center;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  max-width: 26ch;
+  color: rgb(var(--snow));
+  text-shadow: 0 1px 12px rgb(var(--ink-0));
 }
-.manifesto-turn-b {
-  color: rgb(var(--fog));
-  font-size: clamp(1.05rem, 1rem + 0.3vw, 1.25rem);
-  line-height: 1.6;
-  max-width: 46ch;
+
+/* Visual 2: Grupo Transforma → ECN → gestores e instituições */
+.chv-lines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.chv-lines path {
+  fill: none;
+  stroke: rgb(var(--mint) / 0.6);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.2s var(--ease-expo) 0.3s;
+}
+.chv-node,
+.chv-hub {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.9s var(--ease-expo);
+}
+.chv-node {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: rgb(var(--snow));
+  background: rgb(var(--ink-2));
+  box-shadow: inset 0 0 0 1px rgb(var(--snow) / 0.14);
+}
+.chv-node-top {
+  left: 50%;
+  top: 17.5%;
+}
+.chv-node-l {
+  left: 25%;
+  top: 82.5%;
+}
+.chv-node-r {
+  left: 75%;
+  top: 82.5%;
+}
+.chv-hub {
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: clamp(84px, 9vw, 116px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgb(var(--ink));
+  color: rgb(var(--snow));
+  box-shadow:
+    0 0 0 1px rgb(var(--mint) / 0.4),
+    0 0 50px rgb(var(--mint) / 0.35);
+}
+.chv-logo {
+  width: 64%;
+  height: auto;
+}
+.chv-node-top,
+.chv-hub {
+  transition-delay: 0.1s;
+}
+.chv-node-l,
+.chv-node-r {
+  transition-delay: 0.8s;
+}
+/* um ponto de luz desce do Grupo Transforma até a ECN, em loop */
+.chv-pulse {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: rgb(var(--mint));
+  box-shadow: 0 0 12px rgb(var(--mint));
+  animation: pulse-down 2.6s var(--ease-in-out) infinite;
+}
+@keyframes pulse-down {
+  0% {
+    top: 22%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    top: 40%;
+    opacity: 0;
+  }
+}
+
+/* Visual 3: os seis desafios */
+.chv-desafios {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+  gap: 10px;
+  padding: clamp(16px, 2.4vw, 32px);
+}
+.chv-desafios li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 0.8rem + 0.3vw, 1.05rem);
+  color: rgb(var(--snow));
+  background: rgb(var(--snow) / 0.05);
+  box-shadow: inset 0 0 0 1px rgb(var(--mint) / 0.35);
+  transition:
+    opacity 0.6s var(--ease-out),
+    transform 0.8s var(--ease-expo),
+    box-shadow 0.6s var(--ease-out);
+  transition-delay: calc(var(--i) * 120ms + 150ms);
+}
+.chv-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgb(var(--mint));
+  box-shadow: 0 0 10px rgb(var(--mint));
+  transition:
+    background-color 0.5s,
+    box-shadow 0.5s;
+  transition-delay: inherit;
+}
+
+/* Visual 4: teoria riscada, prática acesa */
+.chv-virada {
+  display: grid;
+  place-content: center;
+  justify-items: start;
+  gap: 4px;
+  padding: 24px;
+}
+.chv-teoria,
+.chv-pratica {
+  position: relative;
+  font-weight: 900;
+  font-size: clamp(2.6rem, 1.4rem + 4vw, 5.2rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+.chv-teoria {
+  color: rgb(var(--snow) / 0.4);
+}
+.chv-strike {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: 54%;
+  height: 0.09em;
+  border-radius: 999px;
+  background: rgb(var(--snow) / 0.75);
+  transform-origin: left;
+  transition: transform 0.9s var(--ease-expo) 0.35s;
+}
+.chv-pratica {
+  color: rgb(var(--mint));
+  text-shadow: 0 0 40px rgb(var(--mint) / 0.45);
+  transition:
+    opacity 0.8s var(--ease-out) 0.9s,
+    transform 0.9s var(--ease-expo) 0.9s;
+}
+
+/* Estado inicial animado (só com JS e sem movimento reduzido) */
+.has-motion .chapter:not(.is-in) .chv-person {
+  opacity: 0;
+  transform: translateY(40px);
+}
+.has-motion .chapter:not(.is-in) .chv-lines path {
+  stroke-dashoffset: 1;
+}
+.has-motion .chapter:not(.is-in) .chv-node,
+.has-motion .chapter:not(.is-in) .chv-hub {
+  opacity: 0;
+  transform: translate(-50%, -30%) scale(0.92);
+}
+.has-motion .chapter:not(.is-in) .chv-desafios li {
+  opacity: 0.35;
+  transform: translateY(14px);
+  box-shadow: inset 0 0 0 1px rgb(var(--snow) / 0.1);
+}
+.has-motion .chapter:not(.is-in) .chv-dot {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px rgb(var(--snow) / 0.4);
+}
+.has-motion .chapter:not(.is-in) .chv-strike {
+  transform: scaleX(0);
+}
+.has-motion .chapter:not(.is-in) .chv-pratica {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.manifesto-end {
+  padding-block: clamp(56px, 8vw, 120px) clamp(96px, 12vw, 180px);
 }
 .manifesto-closing {
-  margin-top: clamp(56px, 9vw, 140px);
   max-width: 21ch;
   font-size: clamp(2.1rem, 1rem + 3.6vw, 4.6rem);
   font-weight: 900;
@@ -865,11 +1197,15 @@ html.lenis body {
   background: rgb(var(--mint));
   box-shadow: 0 0 0 8px rgb(var(--mint) / 0.14);
 }
-@media (min-width: 1024px) {
-  .manifesto-turn {
-    grid-template-columns: 1fr 1fr;
-    gap: 64px;
-    align-items: start;
+@media (min-width: 640px) and (max-width: 1023px) {
+  .chapter {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chv-pulse {
+    display: none;
   }
 }
 
@@ -2797,5 +3133,62 @@ html.lenis body {
   .eco-slab[data-active="diamante"]::after {
     animation: none;
     opacity: 0;
+  }
+}
+
+/* Parceiros: 3 cartões */
+.partner-icon {
+  height: clamp(44px, 4.6vw, 64px);
+}
+.partner-name {
+  margin-top: -6px;
+  font-weight: 900;
+  font-size: clamp(1.1rem, 0.9rem + 0.6vw, 1.45rem);
+  letter-spacing: -0.02em;
+  color: rgb(var(--ink));
+}
+.partners-grid > .partner:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+@media (min-width: 640px) {
+  .partners-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .partners-grid > .partner:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+}
+
+/* Capítulo 1: retratos maiores e sobrepostos quando há espaço */
+@media (min-width: 1024px) {
+  .is-horizontal .chv-origem {
+    padding-top: 12%;
+  }
+  .is-horizontal .chv-person {
+    width: 44%;
+    margin-inline: -8%;
+  }
+  .is-horizontal .chv-person:nth-child(2) {
+    width: 48%;
+  }
+  .is-horizontal .chv-person figcaption {
+    font-size: 0.85rem;
+  }
+}
+@media (max-width: 639px) {
+  .chv-person figcaption {
+    font-size: 0.66rem;
+    bottom: 6px;
+  }
+}
+@media (min-width: 1024px) {
+  /* nomes das laterais na parte que não fica sob o retrato do meio */
+  .is-horizontal .chv-person:first-child figcaption {
+    right: 36%;
+    text-align: left;
+  }
+  .is-horizontal .chv-person:last-child figcaption {
+    left: 36%;
+    text-align: right;
   }
 }

@@ -1,16 +1,5 @@
 import { Fragment, type ReactNode } from "react";
 
-// Quebra o texto em palavras (<span class="w">) para a leitura guiada do manifesto.
-// O texto continua contínuo para leitores de tela.
-export function Words({ text }: { text: string }) {
-  return text.split(" ").map((w, i) => (
-    <Fragment key={i}>
-      {i > 0 && " "}
-      <span className="w">{w}</span>
-    </Fragment>
-  ));
-}
-
 export type RichText = Array<string | { strong: string }>;
 
 export function Rich({ parts }: { parts: string | RichText }) {

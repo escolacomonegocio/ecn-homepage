@@ -135,20 +135,6 @@ export function Motion() {
             });
           });
 
-          // Leitura guiada: palavras acendem com o scroll.
-          q("[data-words]").forEach((el) => {
-            gsap.fromTo(
-              q(".w", el),
-              { opacity: 0.4 }, // 0.4 mantém contraste 3:1 do texto grande ainda "apagado"
-              {
-                opacity: 1,
-                ease: "none",
-                stagger: 0.1,
-                scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 52%", scrub: true },
-              },
-            );
-          });
-
           // Contadores.
           q("[data-count]").forEach((el) => {
             const to = Number(el.dataset.count);
@@ -196,6 +182,39 @@ export function Motion() {
               .fromTo("[data-manifesto-shade]", { opacity: 0.35 }, { opacity: 0.7, ease: "none" }, 0.2);
           }
 
+          // (criado depois do pin do vídeo: ScrollTrigger mede na ordem de criação)
+          // Capítulos do manifesto: no desktop o trilho desliza na horizontal enquanto
+          // a página rola (seção fixada); cada capítulo "acende" o visual ao ficar
+          // majoritariamente visível (IntersectionObserver funciona com transform).
+          const track = document.querySelector<HTMLElement>("[data-chapters]");
+          const wrap = document.querySelector<HTMLElement>("[data-chapters-wrap]");
+          if (track && wrap) {
+            const io = new IntersectionObserver(
+              (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("is-in")),
+              { threshold: 0.55 },
+            );
+            q("[data-chapter]").forEach((el) => io.observe(el));
+            undo.push(() => io.disconnect());
+            if (desktop) {
+              wrap.classList.add("is-horizontal");
+              const dist = () => track.scrollWidth - window.innerWidth;
+              gsap.to(track, {
+                x: () => -dist(),
+                ease: "none",
+                scrollTrigger: {
+                  trigger: wrap,
+                  start: "top top",
+                  end: () => `+=${dist()}`,
+                  pin: true,
+                  scrub: 0.6,
+                  invalidateOnRefresh: true,
+                  onUpdate: (self) => gsap.set("[data-chapters-bar]", { scaleX: self.progress }),
+                },
+              });
+              undo.push(() => wrap.classList.remove("is-horizontal"));
+            }
+          }
+
           // Ecossistema: no desktop o container fixa e os cinco painéis se alternam.
           const eco = document.querySelector<HTMLElement>("[data-eco]");
           if (eco && desktop) {
@@ -223,16 +242,19 @@ export function Motion() {
             const st = ScrollTrigger.create({
               trigger: eco,
               start: "top top",
-              end: `+=${(n - 1) * 85}%`,
+              // Sem snap: ele é direcional e empurrava para a solução seguinte com
+              // qualquer toque de rolagem. Cada solução ocupa uma faixa igual do trajeto
+              // (1 tela cada) e só troca quando a pessoa rola a faixa inteira.
+              end: `+=${n * 100}%`,
               pin: true,
-              snap: { snapTo: 1 / (n - 1), duration: { min: 0.25, max: 0.6 }, delay: 0.08, ease: "power2.inOut" },
               onUpdate: (self) => {
-                const pos = self.progress * (n - 1);
-                setActive(Math.round(pos));
-                bars.forEach((b, k) => gsap.set(b, { scaleX: Math.min(Math.max(pos - k + 0.5, 0), 1) }));
+                const pos = Math.min(self.progress * n, n - 0.0001);
+                setActive(Math.floor(pos));
+                bars.forEach((b, k) => gsap.set(b, { scaleX: Math.min(Math.max(pos - k, 0), 1) }));
               },
             });
-            const jump = (i: number) => lenis.scrollTo(st.start + ((st.end - st.start) * i) / (n - 1), { duration: 1.2 });
+            // entra na faixa da solução com folga, para não cair na borda com a anterior
+            const jump = (i: number) => lenis.scrollTo(st.start + ((st.end - st.start) * (i + 0.15)) / n, { duration: 1.2 });
             tabs.forEach((t, i) => t.addEventListener("click", () => jump(i)));
             ecoJump = (id) => {
               const i = panels.findIndex((p) => p.id === id);
