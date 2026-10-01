@@ -98,8 +98,8 @@ export type Solucao = {
   body: Array<string | Array<string | { strong: string }>>;
   forWhom?: string;
   cta: string;
-  /** Quando existe, o CTA vira rótulo e cada link leva a uma página própria. */
-  links?: Array<{ label: string; href: string }>;
+  /** Quando existe, o CTA vira rótulo e cada link vira uma capa que leva à página própria. */
+  links?: Array<{ id: "ine" | "ges" | "eds"; label: string; href: string }>;
 };
 
 export const ecossistema = {
@@ -167,9 +167,9 @@ export const ecossistema = {
       ],
       cta: "Conhecer os cursos",
       links: [
-        { label: "IA na Educação", href: "https://www.escolacomonegocio.com.br/ine/" },
-        { label: "Gravação e Edição Simplificadas", href: "https://www.escolacomonegocio.com.br/ges/" },
-        { label: "Educador de Sucesso", href: "https://www.escolacomonegocio.com.br/eds/" },
+        { id: "ine", label: "IA na Educação", href: "https://www.escolacomonegocio.com.br/ine/" },
+        { id: "ges", label: "Gravação e Edição Simplificadas", href: "https://www.escolacomonegocio.com.br/ges/" },
+        { id: "eds", label: "Educador de Sucesso", href: "https://www.escolacomonegocio.com.br/eds/" },
       ],
     },
     {

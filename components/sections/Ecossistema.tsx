@@ -4,11 +4,13 @@ import { ecossistema as c, type Solucao } from "@/lib/content";
 import { Button, Kicker, Rich } from "../ui";
 import { DiamondVisual } from "../DiamondVisual";
 import leonardo from "@/assets/leonardo-chucrute.webp";
-import plateia from "@/assets/evento-plateia.jpg";
 import mauricioPalco from "@/assets/evento-mauricio.jpg";
 import sx from "@/assets/parceiro-sx.png";
 import techlithy from "@/assets/parceiro-techlithy.png";
 import metrik from "@/assets/parceiro-metrik.png";
+import cursoIne from "@/assets/curso-ine.webp";
+import cursoGes from "@/assets/curso-ges.webp";
+import cursoEds from "@/assets/curso-eds.webp";
 
 // Empresas parceiras (logos enviados pelo cliente, convertidos para versão monocromática).
 const parceiros = [
@@ -45,7 +47,7 @@ function ImplementacaoVisual() {
   );
 }
 
-function Photo({ src, alt, pos = "center" }: { src: typeof plateia; alt: string; pos?: string }) {
+function Photo({ src, alt, pos = "center" }: { src: typeof mauricioPalco; alt: string; pos?: string }) {
   return (
     <div className="eco-visual eco-photo">
       <Image src={src} alt={alt} fill sizes="(min-width: 1024px) 34vw, 92vw" placeholder="blur" style={{ objectPosition: pos }} className="object-cover" />
@@ -62,11 +64,33 @@ function Cutout({ src, alt }: { src: typeof leonardo; alt: string }) {
   );
 }
 
-const visuals: Record<Solucao["id"], ReactNode> = {
+// Capas recortadas das páginas de cada curso (escolacomonegocio.com.br/ine, /ges, /eds).
+const capas = { ine: cursoIne, ges: cursoGes, eds: cursoEds };
+
+function Capas({ links, label }: { links: NonNullable<Solucao["links"]>; label: string }) {
+  return (
+    <nav className="eco-visual eco-capas" aria-label={label}>
+      <ul>
+        {links.map((l, i) => (
+          <li key={l.id} style={idx(i)}>
+            <a href={l.href} className="capa">
+              <Image src={capas[l.id]} alt="" fill sizes="(min-width: 1024px) 18vw, 64vw" placeholder="blur" className="object-cover" />
+              <span className="capa-name">{l.label}</span>
+              <span className="capa-go" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+const visuals: Partial<Record<Solucao["id"], ReactNode>> = {
   diamante: <DiamondVisual />,
   mentoria: <Cutout src={leonardo} alt="Leonardo Chucrute, fundador da ECN" />,
   implementacao: <ImplementacaoVisual />,
-  cursos: <Photo src={plateia} alt="Participantes de um encontro da ECN" pos="50% 40%" />,
   palestras: <Photo src={mauricioPalco} alt="Mauricio Thomas em palestra da ECN" pos="50% 30%" />,
 };
 
@@ -115,26 +139,17 @@ export function Ecossistema() {
                   </p>
                 )}
                 {s.links ? (
-                  <nav className="eco-cta eco-links" aria-label={s.cta}>
-                    <p className="eco-links-label">{s.cta}</p>
-                    <ul>
-                      {s.links.map((l) => (
-                        <li key={l.href}>
-                          <a href={l.href}>
-                            {l.label}
-                            <span aria-hidden="true">→</span>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
+                  <p className="eco-cta eco-links-label">
+                    {s.cta}
+                    <span aria-hidden="true">→</span>
+                  </p>
                 ) : (
                   <Button href="#contato" interesse={s.id} className={`eco-cta ${s.id === "diamante" ? "btn-shine" : ""}`}>
                     {s.cta}
                   </Button>
                 )}
               </div>
-              {visuals[s.id]}
+              {s.links ? <Capas links={s.links} label={s.cta} /> : visuals[s.id]}
             </article>
           ))}
         </div>

@@ -21,12 +21,18 @@ for (const [w, h] of [[1440, 900], [1366, 768], [390, 844]]) {
     await page.click('[aria-controls="cursos"]');
     await new Promise((r) => setTimeout(r, 2200));
   } else {
-    await page.evaluate(() => document.querySelector("#cursos .eco-links").scrollIntoView({ block: "center" }));
+    await page.evaluate(() => document.querySelector("#cursos .eco-capas").scrollIntoView({ block: "center", inline: "nearest" }));
     await new Promise((r) => setTimeout(r, 1500));
   }
-  const links = await page.$$eval("#cursos .eco-links a", (as) => as.map((a) => `${a.textContent.trim()} ${a.href}`));
-  console.log(w, links);
+  const links = await page.$$eval("#cursos .capa", (as) => as.map((a) => `${a.textContent.trim()} ${a.href}`));
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+  console.log(w, links.length, "links", "overflow:", overflow);
   await page.screenshot({ path: `${out}/${w}.png` });
+  if (w >= 1024) {
+    await page.hover("#cursos li:nth-child(2) .capa");
+    await new Promise((r) => setTimeout(r, 1000));
+    await page.screenshot({ path: `${out}/${w}-hover.png` });
+  }
   await page.close();
 }
 await browser.close();
