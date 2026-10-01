@@ -1665,10 +1665,6 @@ html.lenis body {
   .eco-capas li {
     max-height: 100%;
   }
-  /* a do meio sobe: as três parecem dispostas numa estante */
-  .eco-capas li:nth-child(2) {
-    translate: 0 -5%;
-  }
   .is-pinned .eco-panel--cursos {
     grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
   }
