@@ -1306,6 +1306,46 @@ html.lenis body {
 .eco-cta {
   margin-top: 26px;
 }
+.eco-links {
+  max-width: 60ch;
+}
+.eco-links-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--mint));
+}
+.eco-links ul {
+  margin-top: 10px;
+  border-top: 1px solid rgb(var(--snow) / 0.12);
+}
+.eco-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding: 10px 4px;
+  border-bottom: 1px solid rgb(var(--snow) / 0.12);
+  color: rgb(var(--snow));
+  font-weight: 600;
+  font-size: 1.05rem;
+  transition: color 0.25s var(--ease-out), padding 0.25s var(--ease-out);
+}
+.eco-links a span {
+  color: rgb(var(--mint));
+  transition: transform 0.25s var(--ease-out);
+}
+.eco-links a:hover,
+.eco-links a:focus-visible {
+  color: rgb(var(--mint));
+  padding-left: 10px;
+}
+.eco-links a:hover span,
+.eco-links a:focus-visible span {
+  transform: translateX(4px);
+}
 .eco-visual {
   position: relative;
   border-radius: 24px;

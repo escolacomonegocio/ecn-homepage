@@ -114,9 +114,25 @@ export function Ecossistema() {
                     <strong>Para quem é:</strong> {s.forWhom}
                   </p>
                 )}
-                <Button href="#contato" interesse={s.id} className={`eco-cta ${s.id === "diamante" ? "btn-shine" : ""}`}>
-                  {s.cta}
-                </Button>
+                {s.links ? (
+                  <nav className="eco-cta eco-links" aria-label={s.cta}>
+                    <p className="eco-links-label">{s.cta}</p>
+                    <ul>
+                      {s.links.map((l) => (
+                        <li key={l.href}>
+                          <a href={l.href}>
+                            {l.label}
+                            <span aria-hidden="true">→</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                ) : (
+                  <Button href="#contato" interesse={s.id} className={`eco-cta ${s.id === "diamante" ? "btn-shine" : ""}`}>
+                    {s.cta}
+                  </Button>
+                )}
               </div>
               {visuals[s.id]}
             </article>

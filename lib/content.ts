@@ -98,6 +98,8 @@ export type Solucao = {
   body: Array<string | Array<string | { strong: string }>>;
   forWhom?: string;
   cta: string;
+  /** Quando existe, o CTA vira rótulo e cada link leva a uma página própria. */
+  links?: Array<{ label: string; href: string }>;
 };
 
 export const ecossistema = {
@@ -164,6 +166,11 @@ export const ecossistema = {
         "Conteúdos online sobre gestão, inteligência artificial, produção de conteúdo, marketing e vendas, desenvolvidos a partir da experiência prática dos profissionais da ECN.",
       ],
       cta: "Conhecer os cursos",
+      links: [
+        { label: "IA na Educação", href: "https://www.escolacomonegocio.com.br/ine/" },
+        { label: "Gravação e Edição Simplificadas", href: "https://www.escolacomonegocio.com.br/ges/" },
+        { label: "Educador de Sucesso", href: "https://www.escolacomonegocio.com.br/eds/" },
+      ],
     },
     {
       id: "palestras",
