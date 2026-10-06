@@ -6,8 +6,9 @@ import { whatsappLink } from "@/lib/site";
 
 // Formulário em modal, uma etapa por vez. Abre por qualquer elemento com
 // data-open-form (sem opção) ou data-interesse="<id>" (opção já marcada, pula a 1ª etapa).
-// O envio abre o WhatsApp do time com os dados escritos: o lead chega direto em quem
-// atende, sem backend. Quando houver CRM, o POST entra em send().
+// O envio abre o WhatsApp do time com os dados escritos e, em paralelo, grava o lead no
+// Techlithy CRM via /api/lead. O WhatsApp abre na hora (dentro do clique, senão o navegador
+// bloqueia a janela); se o CRM falhar, a pessoa não percebe e o lead segue pelo WhatsApp.
 
 type Field = { name: string; label: string; type?: string; autoComplete?: string; inputMode?: "tel" | "email" | "numeric" | "text"; required: boolean; placeholder?: string };
 
@@ -148,6 +149,13 @@ export function ContactModal() {
     ]
       .filter((l) => l !== null)
       .join("\n");
+    const utm = Object.fromEntries([...new URLSearchParams(location.search)].filter(([k]) => k.startsWith("utm_")));
+    fetch("/api/lead", {
+      method: "POST",
+      keepalive: true,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...values, interesse, utm }),
+    }).catch(() => {});
     const url = whatsappLink(msg);
     window.open(url, "_blank", "noopener,noreferrer");
     setSentUrl(url);

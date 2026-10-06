@@ -5,7 +5,7 @@
 
 const HOME = "https://ecn-homepage.vercel.app";
 
-const ARQUIVOS_DA_HOME = [/^\/_next\//, /^\/video\//, /^\/(icon|apple-icon)\.png$/, /^\/opengraph-image\.jpg$/];
+const ARQUIVOS_DA_HOME = [/^\/api\/lead$/, /^\/_next\//, /^\/video\//, /^\/(icon|apple-icon)\.png$/, /^\/opengraph-image\.jpg$/];
 
 // Parâmetros que, em "/", são do WordPress (busca, prévia de post, Elementor, feed).
 const PARAMS_WORDPRESS = ["p", "page_id", "s", "preview", "elementor-preview", "feed", "post_type"];

@@ -11,7 +11,19 @@ await page.evaluateOnNewDocument(() => {
   window.__opened = [];
   window.open = (u) => (window.__opened.push(u), null);
 });
-await page.goto(url, { waitUntil: "networkidle0" });
+// O POST do lead é interceptado e respondido aqui: o teste nunca grava no CRM.
+const leads = [];
+await page.setRequestInterception(true);
+page.on("request", (r) => {
+  if (r.url().endsWith("/api/lead")) {
+    leads.push(JSON.parse(r.postData()));
+    return r.respond({ status: 200, contentType: "application/json", body: "{\"ok\":true}" });
+  }
+  r.continue();
+});
+const alvo = new URL(url);
+alvo.searchParams.set("utm_source", "teste");
+await page.goto(alvo.toString(), { waitUntil: "networkidle0" });
 await new Promise((r) => setTimeout(r, 800));
 
 const isOpen = () => page.$eval("dialog.mdialog", (d) => d.open);
@@ -77,6 +89,12 @@ for (const part of ["Ana Ribeiro", "Diretora", "Colégio Horizonte", "Niterói/R
 }
 assert.ok(!text.includes("Número de alunos"), "campo opcional vazio não deve aparecer");
 assert.ok(await page.$(".mdone"), "estado de sucesso não apareceu");
+await new Promise((r) => setTimeout(r, 300));
+assert.equal(leads.length, 1, "lead não foi enviado para /api/lead");
+assert.equal(leads[0].interesse, "diamante");
+assert.equal(leads[0].email, "ana@colegiohorizonte.com.br");
+assert.equal(leads[0].escola, "Colégio Horizonte");
+assert.equal(leads[0].utm.utm_source, "teste");
 
 // 8. Opção escolhida no cartão da seção Contato abre na 2ª etapa.
 await click(".mclose");
