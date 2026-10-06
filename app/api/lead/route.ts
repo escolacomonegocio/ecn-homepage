@@ -75,13 +75,18 @@ export async function POST(req: Request) {
       signal: AbortSignal.timeout(8000),
     });
     if (!r.ok) {
-      console.error("[lead] CRM recusou", r.status, (await r.text().catch(() => "")).slice(0, 300));
-      return Response.json({ ok: false }, { status: 502 });
+      const txt = await r.text().catch(() => "");
+      console.error("[lead] CRM recusou", r.status, txt.slice(0, 300));
+      // status e código de erro do CRM (ex.: 401 API_KEY_INVALIDA) para diagnóstico sem acesso ao log;
+      // não carregam dado do lead nem segredo
+      const codigo = /"code"\s*:\s*"([A-Z_]+)"/.exec(txt)?.[1];
+      return Response.json({ ok: false, crm: r.status, codigo }, { status: 502 });
     }
     console.log("[lead] ok", { external_id: payload.external_id, interesse });
     return Response.json({ ok: true });
   } catch (e) {
-    console.error("[lead] erro", e instanceof Error ? e.name : e);
-    return Response.json({ ok: false }, { status: 502 });
+    const nome = e instanceof Error ? e.name : "erro";
+    console.error("[lead] erro", nome);
+    return Response.json({ ok: false, crm: nome === "TimeoutError" ? "timeout" : "falha de rede" }, { status: 502 });
   }
 }
