@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -19,9 +20,10 @@ export const metadata: Metadata = {
   title: "ECN | Escola como Negócio: gestão, marketing e crescimento para escolas",
   description: site.description,
   alternates: { canonical: "/" },
-  // Enquanto a página vive num domínio temporário (*.vercel.app), fica fora do Google para
-  // não competir com o site atual. Ao apontar o domínio oficial: NEXT_PUBLIC_INDEXAR=true.
-  robots: process.env.NEXT_PUBLIC_INDEXAR === "true" ? { index: true, follow: true } : { index: false, follow: false },
+  // Indexável no domínio oficial; o endereço *.vercel.app recebe X-Robots-Tag noindex (next.config).
+  robots: { index: true, follow: true },
+  // Verificação do domínio na Meta (as mesmas do site atual).
+  other: { "facebook-domain-verification": ["ood9hom56gfrlwq7br3usnmfzwdwqw", "edrv5862g7px9x5g5yfjnwjh0g4vjc"] },
   openGraph: {
     type: "website",
     locale: "pt_BR",
@@ -56,6 +58,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Pular para o conteúdo
         </a>
         {children}
+        {/* Rastreamento herdado do site atual: UTMify e Pixel da Meta. */}
+        <Script id="utmify" strategy="afterInteractive">
+          {`window.pixelId = "679d045ebf70adf4b38d9753";
+var a = document.createElement("script");
+a.async = true;
+a.defer = true;
+a.src = "https://cdn.utmify.com.br/scripts/pixel/pixel.js";
+document.head.appendChild(a);`}
+        </Script>
+        <Script id="meta-pixel" strategy="afterInteractive">
+          {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");
+fbq("init", "2439585536395879");
+fbq("track", "PageView");`}
+        </Script>
+        <noscript>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img height="1" width="1" style={{ display: "none" }} alt="" src="https://www.facebook.com/tr?id=2439585536395879&ev=PageView&noscript=1" />
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}

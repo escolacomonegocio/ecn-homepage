@@ -4,11 +4,13 @@ import type { NextConfig } from "next";
 // é necessário para o bootstrap inline do Next em página estática.
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://vercel.live",
+  // Pixel da Meta e UTMify (mesmo rastreamento do site atual); o UTMify puxa sha256 do jsdelivr,
+  // geolocalização por IP e, quando configurado, o pixel do TikTok.
+  "script-src 'self' 'unsafe-inline' https://vercel.live https://connect.facebook.net https://cdn.utmify.com.br https://cdn.jsdelivr.net https://analytics.tiktok.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://vercel.live https://vercel.com",
+  "img-src 'self' data: blob: https://vercel.live https://vercel.com https://www.facebook.com",
   "font-src 'self' https://vercel.live",
-  "connect-src 'self' https://vercel.live wss://ws-us3.pusher.com",
+  "connect-src 'self' https://vercel.live wss://ws-us3.pusher.com https://www.facebook.com https://connect.facebook.net https://tracking.utmify.com.br https://api.ipify.org https://api6.ipify.org https://ipapi.co https://analytics.tiktok.com",
   "frame-src https://vercel.live",
   "frame-ancestors 'self'",
   "form-action 'self'",
@@ -34,6 +36,12 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
+      },
+      // O endereço *.vercel.app fica fora do Google; só o domínio oficial é indexado.
+      {
+        source: "/(.*)",
+        has: [{ type: "host", value: "(?<sub>.*)\\.vercel\\.app" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
     ];
   },

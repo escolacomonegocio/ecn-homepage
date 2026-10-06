@@ -44,7 +44,7 @@ Modal (`<dialog>` nativo) em 4 etapas curtas, com vidro líquido. Abre por qualq
 
 ## Indexação
 
-Enquanto a página estiver num domínio temporário (`*.vercel.app`), ela vai com `noindex` para não competir com o site atual no Google. Ao apontar o domínio oficial, defina na Vercel `NEXT_PUBLIC_INDEXAR=true` e `NEXT_PUBLIC_SITE_URL=https://www.escolacomonegocio.com.br`, e faça um novo deploy.
+A página é indexável no domínio oficial. O endereço `*.vercel.app` recebe o cabeçalho `X-Robots-Tag: noindex` (em `next.config.ts`) para não aparecer no Google. No www, a home é servida por um Worker do Cloudflare que manda `/` para a Vercel e o resto para o WordPress (ver `cloudflare/worker.mjs`).
 
 ## Scripts
 
